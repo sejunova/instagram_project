@@ -9,18 +9,23 @@ https://docs.djangoproject.com/en/1.11/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
-
+import json
 import os
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# instagram_project/instagram/
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+#instagram_project/
+ROOT_DIR = os.path.dirname(BASE_DIR)
+#instagram_project/.config_secret/
+CONFIG_SECRET_DIR = os.path.join(ROOT_DIR, '.config_secret')
 
-
+with open(os.path.join(CONFIG_SECRET_DIR, 'settings_common.json')) as json_data:
+    config_secret_common = json.load(json_data)
+    SECRET_KEY = config_secret_common['django']['secret_key']
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 't$57&gi#u4aayofl1s^+0ua*w_b^2qw5qub2jrg8ilp$t-ix+o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
