@@ -20,6 +20,7 @@ ROOT_DIR = os.path.dirname(BASE_DIR)
 CONFIG_SECRET_DIR = os.path.join(ROOT_DIR, '.config_secret')
 #instagram_project/instagram/media/
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 #instagram_project/instagram/static/
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
