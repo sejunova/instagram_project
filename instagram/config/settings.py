@@ -22,6 +22,8 @@ CONFIG_SECRET_DIR = os.path.join(ROOT_DIR, '.config_secret')
 with open(os.path.join(CONFIG_SECRET_DIR, 'settings_common.json')) as json_data:
     config_secret_common = json.load(json_data)
     SECRET_KEY = config_secret_common['django']['secret_key']
+    DATABASES = config_secret_common['django']['databases']
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
@@ -80,16 +82,6 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'instagram',
-        'HOST': 'localhost',
-        'PORT': '5432',
-        'USER': 'sejun',
-        'PASSWORD': 'dlatpwns1',
-    }
-}
 
 
 
