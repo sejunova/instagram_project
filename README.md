@@ -6,7 +6,7 @@
 
 ## Secret config JSON files
 
-'config_secret/settings_commmon.json'
+```config_secret/settings_commmon.json```
 
 ```json
 {
