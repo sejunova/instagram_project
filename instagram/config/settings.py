@@ -18,6 +18,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ROOT_DIR = os.path.dirname(BASE_DIR)
 #instagram_project/.config_secret/
 CONFIG_SECRET_DIR = os.path.join(ROOT_DIR, '.config_secret')
+#instagram_project/instagram/media/
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+#instagram_project/instagram/static/
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 
 with open(os.path.join(CONFIG_SECRET_DIR, 'settings_common.json')) as json_data:
     config_secret_common = json.load(json_data)
@@ -46,6 +51,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_extensions',
+
+    'post',
 ]
 
 MIDDLEWARE = [
