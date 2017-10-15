@@ -15,15 +15,14 @@ Including another URLconf
 """
 
 from django.conf import settings
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.contrib import admin
-
-from post import views
+from post import urls as post_urls
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^post/$', views.post_list),
+    url(r'^', include(post_urls)),
 ]
 urlpatterns += static(
     settings.MEDIA_URL,

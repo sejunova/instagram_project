@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<img src="{{ post.photo.url }}" alt=""><br>
+{% for comment in comments %}
+    <span>{{comment.content}}</span> <span>{{comment.created_at}}</span> <br>
+{% endfor %}
+</body>
+</html>

@@ -8,8 +8,19 @@
     <title>Document</title>
 </head>
 <body>
+<form action="{% url 'upload_pic' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+    <p>
+        <input id="id_image" type="file" class="" name="image">
+    </p>
+    <input type="submit" value="사진 올리기"/>
+</form>
+
 {% for post in posts %}
-<div>{{ post.photo }}</div>
+<div>
+    <a href="{% url 'post_detail' pk=post.pk %}">
+        <img src="{{ post.photo.url }}" alt="">
+    </a>
+</div>
 {% endfor %}
 </body>
 </html>
