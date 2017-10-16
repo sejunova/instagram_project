@@ -8,9 +8,12 @@ class Post(models.Model):
         return f'{self.created_at}'
 
 class PostComment(models.Model):
-    post = models.ForeignKey(Post)
+    post = models.ForeignKey(Post, related_name='comments')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.created_at}'
+
+    class Meta:
+        ordering = ['created_at']

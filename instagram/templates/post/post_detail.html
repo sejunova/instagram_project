@@ -1,13 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<img src="{{ post.photo.url }}" alt=""><br>
-{% for comment in comments %}
-    <span>{{comment.content}}</span> <span>{{comment.created_at}}</span> <br>
+{% extends 'base.html' %}
+{% block content %}
+<div class="post_detail">
+    {% if post.photo %}
+    <img src="{{ post.photo.url }}" alt=""><br>
+    {% else %}
+    <span>사진이 없습니다</span>
+    {% endif %}
+</div>
+<ul>
+{% for comment in post.comments.all %}
+    <li><span>{{comment.content}}</span> <span>{{comment.created_at}}</span></li>
 {% endfor %}
-</body>
-</html>
+</ul>
+<form action="{% url 'comment_create' pk=post.pk%}" method="POST">
+    {% csrf_token %}
+    {{ comment_form }}
+    <button class="btn btn-block btn-primary">댓글 달기</button>
+</form>
+{% endblock %}

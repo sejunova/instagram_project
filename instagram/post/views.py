@@ -1,8 +1,8 @@
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
-from post.forms import ImageUploadForm
-from post.models import Post
+from .forms import PostForm, CommentForm
+from .models import Post, PostComment
 
 
 def post_list(request):
@@ -10,26 +10,69 @@ def post_list(request):
     템프릿은 'post/post_list.html'을 사용
     """
     posts = Post.objects.all()
+    comment_form = CommentForm()
     context = {
         'posts': posts,
+        'comment_form':comment_form,
     }
     return render(request, 'post/post_list.html', context)
 
 
-def upload_pic(request):
+def post_create(request):
+    # Form 사용 할 때!
     if request.method == 'POST':
-        form = ImageUploadForm(request.POST, request.FILES)
+        form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            Post.objects.create(photo=form.cleaned_data['image'])
-            return redirect('post_list')
-    return HttpResponse('allowed only via POST')
+            post = Post.objects.create(photo=form.cleaned_data['photo'])
+            return HttpResponse(f'<img src="{post.photo.url}">')
+    else:
+        #GET 요청인 경우, 빈 PostForm인스턴스를 생성해서 탬플릿에 전달
+        form = PostForm()
+    context = {
+        'form' : form,
+    }
+    return render(request, 'post/post_create.html', context)
+
+
+
+
+        # Form 사용 안할 때!!!!!!!
+        # photo = request.FILES.get('photo') #get을 사용하면 조건판별까지 가능!!
+        # if request.method == 'POST' and request.FILES.get('photo'):
+        #     # request.FILES를 통해서 파일을 가져온다. html의 form tag 안쪽에 enctype="multipart/form-data"를 추가해야
+        #     # 이렇게 받아짐
+        #     post = Post.objects.create(photo=photo)
+        #     return HttpResponse(f'<img src="{post.photo.url}">')
+        # elif request.method == 'GET':
+        #     return render(request, 'post/post_create.html')
+        #
+        # return render(request, 'post/post_create.html')
 
 
 def post_detail(request, pk):
-    post = Post.objects.get(pk=pk)
-    comments = post.postcomment_set.all()
+    post = get_object_or_404(Post, pk=pk)
+    comment_form = CommentForm()
     context = {
         'post': post,
-        'comments': comments,
+        'comment_form': comment_form,
     }
     return render(request, 'post/post_detail.html', context)
+
+def comment_create(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = PostComment.objects.create(post=post, content=form.cleaned_data['content'])
+        next = request.GET.get('next')
+        if next:
+            return redirect('post_list')
+        return redirect('post_detail', pk=pk)
+
+        # 이 부분은 이제 필요없다!!!
+    # else:
+    #     form = CommentForm()
+    # context = {
+    #     'form':form,
+    # }
+    # return render(request, 'post/comment_create.html', context)

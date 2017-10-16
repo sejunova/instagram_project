@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<div>
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form }}
+        <!--forms.py에서 동적으로 가져와서 형성-->
+        <!--form = PostForm()-->
+        <!--context = {-->
+            <!--'form' : form,-->
+        <!--}-->
+        <!--return render(request, 'post/post_create.html', context)-->
+        <input type="submit" value="사진 올리기">
+    </form>
+</div>
+{% endfor %}
+{% endblock %}

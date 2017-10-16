@@ -1,26 +1,22 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
-<form action="{% url 'upload_pic' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
-    <p>
-        <input id="id_image" type="file" class="" name="image">
-    </p>
-    <input type="submit" value="사진 올리기"/>
-</form>
-
+{% extends 'base.html' %}
+{% block content %}
 {% for post in posts %}
 <div>
     <a href="{% url 'post_detail' pk=post.pk %}">
         <img src="{{ post.photo.url }}" alt="">
     </a>
+
+    <ul id="post-comments-{{ post.pk }}">
+        {% for comment in post.comments.all %}
+        <li>{{ comment.content }}</li>
+        {% endfor %}
+    </ul>
+
+    <form action="{% url 'comment_create' pk=post.pk %}?next=/post/#post-comments-{{ post.pk }}" method="POST">
+        {% csrf_token %}
+        {{ comment_form }}
+        <button class="btn btn-block btn-primary">댓글 달기</button>
+    </form>
 </div>
 {% endfor %}
-</body>
-</html>
+{% endblock %}
