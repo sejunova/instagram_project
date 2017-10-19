@@ -13,8 +13,13 @@
 </head>
 <body>
 <div class="container">
-    <h1>Instagram</h1>
+    <a href="{% url 'post_list' %}"><h1>Instagram</h1></a>
     <hr>
+    {% if user.is_authenticated %}
+    {{ user.username }}님, 환영합니다! <a href="{% url 'logout' %}">[로그아웃하기]</a>
+    {% else %}
+    <a href="{% url 'login' %}">로그인해주세요</a>
+    {% endif %}
 </div>
 {% block content %}
 {% endblock %}

@@ -49,8 +49,8 @@ def post_create(request):
         # return render(request, 'post/post_create.html')
 
 
-def post_detail(request, pk):
-    post = get_object_or_404(Post, pk=pk)
+def post_detail(request, post_pk):
+    post = get_object_or_404(Post, pk=post_pk)
     comment_form = CommentForm()
     context = {
         'post': post,
@@ -58,8 +58,8 @@ def post_detail(request, pk):
     }
     return render(request, 'post/post_detail.html', context)
 
-def comment_create(request, pk):
-    post = get_object_or_404(Post, pk=pk)
+def comment_create(request, post_pk):
+    post = get_object_or_404(Post, pk=post_pk)
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
@@ -67,7 +67,7 @@ def comment_create(request, pk):
         next = request.GET.get('next')
         if next:
             return redirect('post_list')
-        return redirect('post_detail', pk=pk)
+        return redirect('post_detail', post_pk=post.pk)
 
         # 이 부분은 이제 필요없다!!!
     # else:

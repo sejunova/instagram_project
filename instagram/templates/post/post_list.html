@@ -1,22 +1,40 @@
 {% extends 'base.html' %}
+<!--Template language의 for구문을 사용해서 각 Post의 photo항목을 출력-->
+<!--.photo속성의 'url'속성을 사용해서 img태그를 사용 실제 이미지를 보여주기-->
+
+<!--1. 사진 업로드하기-->
+<!--2. 사진에 댓글달기-->
+<!--extra1) urls.py모듈을 post애플리케이션 내부에 생성하고,
+						include를 이용해서 root urls.py모듈에서 사용-->
+<!--extra2) 사진 댓글 지우기, 사진 지우기-->
+
 {% block content %}
-{% for post in posts %}
 <div>
-    <a href="{% url 'post_detail' pk=post.pk %}">
-        <img src="{{ post.photo.url }}" alt="">
-    </a>
+	<a href="#last">Last로 갑시다</a>
+	{% for post in posts %}
+	<div id="post-{{ post.pk }}">
+		<a href="{% url 'post_detail' post_pk=post.pk %}">
+			<img src="{{ post.photo.url }}">
+		</a>
+		<!--
+		각 post마다 comment_form을 추가
+		각 post마다 자신의 댓글 목록을 출력
+		-->
 
-    <ul id="post-comments-{{ post.pk }}">
-        {% for comment in post.comments.all %}
-        <li>{{ comment.content }}</li>
-        {% endfor %}
-    </ul>
+		<form action="{% url 'comment_create' post_pk=post.pk %}?next=/post/#post-comments-{{ post.pk }}" method="POST">
+			{% csrf_token %}
+			{{ comment_form }}
+			<button class="btn btn-primary btn-block">댓글달기</button>
+		</form>
 
-    <form action="{% url 'comment_create' pk=post.pk %}?next=/post/#post-comments-{{ post.pk }}" method="POST">
-        {% csrf_token %}
-        {{ comment_form }}
-        <button class="btn btn-block btn-primary">댓글 달기</button>
-    </form>
+		<ul id="post-comments-{{ post.pk }}">
+			{% for comment in post.comments.all %}
+			<li>{{ comment.content }}</li>
+			{% endfor %}
+		</ul>
+	</div>
+	{% endfor %}
+
+	<div id="last">Last</div>
 </div>
-{% endfor %}
 {% endblock %}

@@ -19,10 +19,12 @@ from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.contrib import admin
 from post import urls as post_urls
+from member import urls as member_urls
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', include(post_urls)),
+    url(r'^post/', include(post_urls)),
+    url(r'^member/', include(member_urls)),
 ]
 urlpatterns += static(
     settings.MEDIA_URL,
