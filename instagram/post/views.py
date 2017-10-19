@@ -22,7 +22,7 @@ def post_list(request):
 def post_create(request):
     if not request.user.is_authenticated:
         return redirect('member:login')
-    
+
     # Form 사용 할 때!
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
@@ -65,11 +65,15 @@ def post_detail(request, post_pk):
 
 
 def comment_create(request, post_pk):
+    if not request.user.is_authenticated:
+        return redirect('member:login')
     post = get_object_or_404(Post, pk=post_pk)
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
-            comment = PostComment.objects.create(post=post, content=form.cleaned_data['content'])
+            comment = PostComment.objects.create(post=post,
+                                                 content=form.cleaned_data['content'],
+                                                 author=request.user)
         next = request.GET.get('next')
         if next:
             return redirect('post:post_list')

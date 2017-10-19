@@ -20,7 +20,7 @@
 			<div class="body-content">
 				<ul id="post-comments-{{ post.pk }}">
 					{% for comment in post.comments.all %}
-					<li>{{ comment.content }}</li>
+					<li><span style="font-weight: bold"> {{ comment.content }}</span>  commented by {{ comment.author.username }}</li>
 					{% endfor %}
 				</ul>
 				<form
