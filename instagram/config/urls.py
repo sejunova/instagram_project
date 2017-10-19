@@ -18,13 +18,16 @@ from django.conf import settings
 from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.contrib import admin
-from post import urls as post_urls
-from member import urls as member_urls
+#from post import urls as post_urls
+#from member import urls as member_urls
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^post/', include(post_urls)),
-    url(r'^member/', include(member_urls)),
+    url(r'^post/', include('post.urls', namespace='post')),
+    url(r'^member/', include('member.urls', namespace='member'))
+    #내 방식
+    #url(r'^post/', include(post_urls)),
+    #url(r'^member/', include(member_urls)),
 ]
 urlpatterns += static(
     settings.MEDIA_URL,

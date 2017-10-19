@@ -34,7 +34,7 @@ def signup(request):
             return HttpResponse(f'{user.username} {user.password}')
     signup_form = SignUpForm()
     context = {
-        'member_form': signup_form,
+        'signup_form': signup_form,
     }
     return render(request, 'member/signup.html', context)
 
@@ -43,7 +43,7 @@ def login(request):
         login_form = LoginForm(request.POST)
         if login_form.is_valid():
             login_form.login(request)
-            return redirect('post_list')
+            return redirect('post:post_list')
         else:
             return HttpResponse('Login credentials invalid')
     else:
@@ -55,4 +55,4 @@ def login(request):
 
 def logout(request):
     django_logout(request)
-    return redirect('post_list')
+    return redirect('post:post_list')

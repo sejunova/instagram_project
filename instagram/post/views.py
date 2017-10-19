@@ -66,8 +66,8 @@ def comment_create(request, post_pk):
             comment = PostComment.objects.create(post=post, content=form.cleaned_data['content'])
         next = request.GET.get('next')
         if next:
-            return redirect('post_list')
-        return redirect('post_detail', post_pk=post.pk)
+            return redirect('post:post_list')
+        return redirect('post:post_detail', post_pk=post.pk)
 
         # 이 부분은 이제 필요없다!!!
     # else:
