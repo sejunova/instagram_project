@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, get_user_model
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.contrib.auth import logout as django_logout
+from django.contrib.auth import logout as django_logout, login as django_login
 from member.forms import SignUpForm, LoginForm
 
 User = get_user_model() #User가 어디서 온건지 명확히 알 수 있다..?
@@ -31,7 +31,8 @@ def signup(request):
             #     username=username,
             #     password=password,
             # )
-            return HttpResponse(f'{user.username} {user.password}')
+            django_login(request, user)
+            return redirect('post:post_list')
     signup_form = SignUpForm()
     context = {
         'signup_form': signup_form,

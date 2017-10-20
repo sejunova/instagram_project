@@ -1,0 +1,9 @@
+{% extends 'base.html %}
+
+{% block content %}
+<div>
+    <h1 class="text-center">권한이 없습니다.</h1>
+    {% if exception %}
+    <p>{{ exception }}</p>
+    {% endif %}
+</div>
