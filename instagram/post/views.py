@@ -28,7 +28,9 @@ def post_create(request):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            post = Post.objects.create(author=request.user, photo=form.cleaned_data['photo'])
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
             return redirect('post:post_list')
     else:
         # GET 요청인 경우, 빈 PostForm인스턴스를 생성해서 탬플릿에 전달
@@ -72,9 +74,14 @@ def comment_create(request, post_pk):
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
-            comment = PostComment.objects.create(post=post,
-                                                 content=form.cleaned_data['content'],
-                                                 author=request.user)
+            comment = form.save(commit=False)
+            comment.author = request.user
+            comment.post = post
+            comment.save()
+            # comment = PostComment.objects.create(post=post,
+            #                                      content=form.cleaned_data['content'],
+            #                                      author=request.user)
+
         next_path = request.GET.get('next', '').strip()
         if next_path:
             return redirect(next_path)
@@ -108,3 +115,16 @@ def comment_delete(request, comment_pk):
             return redirect('post:post_detail', post_pk=comment.post.pk)
         else:
             raise PermissionDenied('작성자가 아닙니다')
+
+def post_like_toggle(request, post_pk):
+    next_path = request.GET.get('next')
+
+    post = get_object_or_404(Post, pk=post_pk)
+    user = request.user
+    filtered_like_posts = user.like_posts.filter(pk=post.pk)
+    if filtered_like_posts.exists():
+        filtered_like_posts.remove(filtered_like_posts)
+
+    if next_path:
+        return redirect(next_path)
+    return redirect('post:post_detail', post_pk=post_pk)

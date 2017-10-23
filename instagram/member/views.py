@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, get_user_model
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout as django_logout, login as django_login
-from member.forms import SignUpForm, LoginForm
+from .forms import SignUpForm, LoginForm
 
 User = get_user_model() #User가 어디서 온건지 명확히 알 수 있다..?
 def signup_old(request): #forms.py 안쓰고 할 때
@@ -19,9 +19,9 @@ def signup_old(request): #forms.py 안쓰고 할 때
 
 def signup(request):
     if request.method == 'POST':
-        signup_form = SignUpForm(request.POST)
+        signup_form = SignUpForm(request.POST, request.FILES)
         if signup_form.is_valid():
-            user = signup_form.signup()
+            user = signup_form.save()
             # username = member_form.cleaned_data['username']
             # password = password=member_form.cleaned_data['password']
             # # 아래 과정은 이제 없어도 된다. 왜? forms.py에 클래스안에 검증메소드 추가함.

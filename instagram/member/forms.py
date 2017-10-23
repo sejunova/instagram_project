@@ -1,59 +1,32 @@
 from django import forms
 from django.contrib.auth import get_user_model, authenticate, login as django_login
+from django.contrib.auth.forms import UserCreationForm
 
 User = get_user_model()  ## 여기다 유저 호출해주는게 convention인듯
 
-
-class SignUpForm(forms.Form):
-    username = forms.CharField(
-        required=True,
-        widget=forms.TextInput(
-            attrs={
-                'class': 'form-control'
-            }
-        )
-    )
-    password = forms.CharField(
-        widget=forms.PasswordInput(
-            attrs={
-                'class': 'form-control'
-            }
-        )
-    )
-    password2 = forms.CharField(
-        widget=forms.PasswordInput(
-            attrs={
-                'class': 'form-control'
-            }
-        )
-    )
-
-    def clean_username(self):  # 기본적인 validity는 확보한 상태(ex) 문자열 와야하는데 숫자가 왔다거나..)
-        data = self.cleaned_data['username']
-        if User.objects.filter(username=data).exists():
-            raise forms.ValidationError("This account already exists")
-        return data
-
-    def clean_password2(self):  # clean_password로 하면 안되는 이유는 아직 password2에 대한 유효성 검사가 안된 시점이기때문
-        password = self.cleaned_data['password']
-        password2 = self.cleaned_data['password2']
-        if password != password2:
-            raise forms.ValidationError('Two passwords should be identical')
-        return password2
-
-    def clean(self):
-        super().clean()
-        if self.is_valid():
-            setattr(self, 'signup', self._signup)
-
-    def _signup(self):
-        username = self.cleaned_data['username']
-        password = self.cleaned_data['password']
-        return User.objects.create_user(
-            username=username,
-            password=password,
-        )
-
+class SignUpForm(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        class_update_fields = ('password1', 'password2')
+        for field in class_update_fields:
+            self.fields[field].widget.attrs.update({
+                'class':'form-control',
+            })
+    class Meta:
+        model = User
+        fields = ('username', 'password1', 'password2', 'img_profile', 'age')
+        widgets = {
+            'username': forms.TextInput(
+                attrs= {
+                    'class': 'form-control',
+                }
+            ),
+            'age': forms.NumberInput(
+                attrs={
+                    'class': 'form-control',
+                }
+            ),
+        }
 
 class LoginForm(forms.Form):
     username = forms.CharField(
@@ -88,3 +61,8 @@ class LoginForm(forms.Form):
 
     def _login(self, request):
         django_login(request, self.user)
+
+
+
+
+
