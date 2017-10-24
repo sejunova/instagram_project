@@ -6,6 +6,12 @@ class UserManager(DjangoUserManager):
     def create_superuser(self, *args, **kwargs):
         return super().create_superuser(age=26, *args, **kwargs)
 class User(AbstractUser):
+    USER_TYPE_FACEBOOK = 'f'
+    USER_TYPE_DJANGO = 'd'
+    USER_TYPE_CHOICES = (
+        ('USER_TYPE_FACEBOOK', 'Facebook'),
+        ('USER_TYPE_CHOICES', 'Django'),
+    )
     img_profile = models.ImageField('이미지 업로드', upload_to='user', blank=True)
     age = models.PositiveIntegerField('나이', null=True)
     like_posts = models.ManyToManyField('post.Post')
@@ -16,6 +22,7 @@ class User(AbstractUser):
         through='Relation',
         related_name='followers',
     )
+    user_type = models.CharField(max_length=1, choices=USER_TYPE_CHOICES)
 
     objects = UserManager()
 

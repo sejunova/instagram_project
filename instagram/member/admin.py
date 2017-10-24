@@ -7,7 +7,7 @@ from member.forms import SignUpForm
 
 class UserAdmin(BaseUserAdmin):
     fieldsets = BaseUserAdmin.fieldsets + (
-        ('추가 정보', {'fields': ('img_profile', 'age', 'like_posts')}),
+        ('추가 정보', {'fields': ('img_profile', 'age', 'like_posts', 'user_type')}),
     )
     add_fieldsets = BaseUserAdmin.add_fieldsets + (
         ('추가 정보', {'fields': ('img_profile', 'age',)}),
