@@ -2,6 +2,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
+from member.decorators import login_required
 from .forms import PostForm, CommentForm
 from .models import Post, PostComment
 
@@ -116,15 +117,60 @@ def comment_delete(request, comment_pk):
         else:
             raise PermissionDenied('작성자가 아닙니다')
 
+@login_required
 def post_like_toggle(request, post_pk):
+    if request.method == 'POST':
+        # if not request.user.is_authenticated:
+        #     return redirect('member:login')
+        next_path = request.GET.get('next')
+
+        post = get_object_or_404(Post, pk=post_pk)
+        user = request.user
+        filtered_like_posts = user.like_posts.filter(pk=post.pk)
+        if filtered_like_posts.exists():
+            user.like_posts.remove(post)
+        else:
+            user.like_posts.add(post)
+
+        if next_path:
+            return redirect(next_path)
+        return redirect('post:post_detail', post_pk=post_pk)
+
+
+
+
+
+def post_like_toggle(request, post_pk):
+    if not request.user.is_authenticated:
+        return render(request, 'member:login')
     next_path = request.GET.get('next')
+    if request.method == 'POST':
+        post = get_object_or_404(Post, pk=post_pk)
+        user = request.user
 
-    post = get_object_or_404(Post, pk=post_pk)
-    user = request.user
-    filtered_like_posts = user.like_posts.filter(pk=post.pk)
-    if filtered_like_posts.exists():
-        filtered_like_posts.remove(filtered_like_posts)
+        filtered_like_posts = user.like_posts.filter(pk=post_pk)
+        if filtered_like_posts.exists():
+            user.like_posts.remove(post)
+        else:
+            user.like_posts.add(post)
 
-    if next_path:
-        return redirect(next_path)
-    return redirect('post:post_detail', post_pk=post_pk)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

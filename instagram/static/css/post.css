@@ -16,3 +16,10 @@ img.img-post {
 .post .panel-body .body-content {
     padding: 10px;
 }
+.comment-form {
+    width: 450px;
+}
+
+.border-none {
+    border: none;
+}
