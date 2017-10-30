@@ -29,6 +29,7 @@
 					<div class="collapse navbar-collapse" id="top-nav">
 						<ul class="nav navbar-nav navbar-right">
 							{% if user.is_authenticated %}
+							<li><a href="{% url 'member:profile' nickname=user.nickname %}">Profile</a></li>
 							<li><a href="{% url 'post:post_create' %}">+ Add Post</a></li>
 							<li><a href="{% url 'member:logout' %}">Logout</a></li>
 							{% else %}

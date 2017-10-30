@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{{ profile_user.nickname }}</h2>
+{% if profile_user.img_profile %}
+<div><img src="{{ profile_user.img_profile.url }}" class="img-profile" alt=""></div>
+{% endif %}
+{% if user == profile_user %}
+{% else %}
+<div>
+    <form action="{% url 'member:follow' nickname=profile_user.nickname %}" method="POST">
+        {% csrf_token %}
+        <button class="btn btn-primary">
+					  <span>
+                          {% if profile_user in user.following_users.all %}
+                          팔로우 해제
+                          {% else %}
+                          팔로우
+                          {% endif %}
+                      </span>
+        </button>
+    </form>
+</div>
+{% endif %}
+<div>
+    <div>팔로워 리스트:
+    {% for follower in profile_user.followers.all %}
+        <a href="{% url 'member:profile' nickname=follower.nickname %}">{{ follower.nickname }}</a>
+    {% endfor %}
+    </div>
+    <div>팔로잉 리스트:
+    {% for following_user in profile_user.following_users.all %}
+        <a href="{% url 'member:profile' nickname=following_user.nickname %}">{{ following_user.nickname }}</a>
+    {% endfor %}
+    </div>
+</div>
+<div><h3>작성 글 목록</h3></div>
+<div>
+    {% for post in posts %}
+    {% include 'include/post.html' with post_type='list' %}
+    {% endfor %}
+</div>
+{% endblock %}

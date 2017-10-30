@@ -2,6 +2,7 @@ import json
 from pprint import pprint
 from typing import NamedTuple
 
+
 from django.contrib.auth import authenticate, get_user_model
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -10,6 +11,7 @@ import requests
 from django.urls import reverse
 
 from config.settings import FACEBOOK_APP_ID, FACEBOOK_APP_SECRET_CODE, FACEBOOK_SCOPE
+from member.decorators import login_required
 from .forms import SignUpForm, LoginForm
 
 User = get_user_model()  # User가 어디서 온건지 명확히 알 수 있다..?
@@ -77,6 +79,15 @@ def logout(request):
     django_logout(request)
     return redirect('post:post_list')
 
+def profile(request, nickname):
+    profile_user = User.objects.get(nickname=nickname)
+    posts = profile_user.posts.all()
+    context = {
+        'profile_user':profile_user,
+        'posts':posts,
+    }
+    return render(request, 'member/profile.html', context)
+
 
 def facebook_login(request):
     class AccessTokenInfo(NamedTuple):
@@ -93,6 +104,12 @@ def facebook_login(request):
         scopes: list
         type: str
         user_id: str
+
+    class UserInfo:
+        def __init__(self, data):
+            self.id =data['id']
+            self.email = data.get('email', '')
+            self.url_picture = data['picture']['data']['url']
 
     app_id = FACEBOOK_APP_ID
     app_secret_code = FACEBOOK_APP_SECRET_CODE
@@ -111,7 +128,6 @@ def facebook_login(request):
         return AccessTokenInfo(**response.json())
 
     token_info = get_access_token_info(code)
-    pprint(token_info)
     access_token = token_info.access_token
 
     def get_debug_token_info(access_token_param):
@@ -128,4 +144,30 @@ def facebook_login(request):
     }
     response = requests.get(url_graph_user_info, params=params_graph_user_info)
     result = response.json()
-    return HttpResponse(result.items())
+    user_info = UserInfo(data=result)
+
+    username = f'fb_{user_info.id}'
+    if User.objects.filter(username=username).exists():
+        user = User.objects.get(username=username)
+    else:
+
+        user = User.objects.create_user(
+            user_type=User.USER_TYPE_FACEBOOK,
+            username=username,
+            age=0,
+        )
+    django_login(request, user)
+    return redirect('post:post_list')
+
+@login_required
+def follow(request, nickname):
+    user = request.user
+    profile_user = User.objects.get(nickname=nickname)
+    posts = profile_user.posts.all()
+    user.follow_toggle(user=profile_user)
+    context = {
+        'user': user,
+        'profile_user': profile_user,
+        'posts': posts,
+    }
+    return render(request, 'member/profile.html', context)

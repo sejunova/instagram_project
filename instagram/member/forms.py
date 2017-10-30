@@ -14,7 +14,7 @@ class SignUpForm(UserCreationForm):
             })
     class Meta:
         model = User
-        fields = ('username', 'password1', 'password2', 'img_profile', 'age')
+        fields = ('username', 'password1', 'password2', 'img_profile', 'age', 'nickname')
         widgets = {
             'username': forms.TextInput(
                 attrs= {
@@ -26,7 +26,18 @@ class SignUpForm(UserCreationForm):
                     'class': 'form-control',
                 }
             ),
+            'nickname': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                }
+            ),
         }
+
+    # def clean_username(self):
+    #     super().clean_username()
+    #     username = self.cleaned_data['username']
+    #     if username.startswith('fb_'):
+    #         raise forms.ValidationError("Username can't start with fb_")
 
 class LoginForm(forms.Form):
     username = forms.CharField(

@@ -8,6 +8,7 @@ class PostManager(models.Manager):
 class Post(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL,
                                on_delete=models.SET_NULL,
+                               related_name='posts',
                                blank=True,
                                null=True)
     #유저모델 이름 신경쓸 필요 X 어차피 유저모델은 하나다

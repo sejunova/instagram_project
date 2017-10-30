@@ -1,5 +1,5 @@
 <div id="post-{{ post.pk }}" class="panel panel-default post">
-    <div class="panel-heading"><span>{{ post.author.username}}</span>
+    <div class="panel-heading"><a href="{% url 'member:profile' nickname=post.author.nickname %}"><span>{{ post.author.nickname}}</span></a>
         {% if post.author == user %}
         <form action="{% url 'post:post_delete' post_pk=post.pk %}" style="display: inline-block" method="post">
             {% csrf_token %}
@@ -35,7 +35,9 @@
 			</div>
             <ul id="post-comments-{{ post.pk }}">
                 {% for comment in post.comments.all %}
-                <form action="{% url 'post:comment_delete' comment_pk=comment.pk %}?next=
+                <li><span style="font-weight: bold"> {{ comment.content }}</span> commented by {{ comment.author.nickname }}
+                    {% if comment.author == user %}
+                    <form action="{% url 'post:comment_delete' comment_pk=comment.pk %}?next=
 						{% if post_type == 'list' %}
 							{% url 'post:post_list' %}#post-{{ post.pk }}
 						{% elif post_type == 'detail' %}
@@ -45,8 +47,6 @@
                     {% csrf_token %}
                     <button class="btn btn-danger btn-xs">삭제</button>
                 </form>
-                <li><span style="font-weight: bold"> {{ comment.content }}</span> commented by {{ comment.author.username }}
-                    {% if comment.author == user %}
 					{% endif %}
                 </li>
                 {% endfor %}

@@ -139,7 +139,7 @@ def post_like_toggle(request, post_pk):
 
 
 
-
+@login_required
 def post_like_toggle(request, post_pk):
     if not request.user.is_authenticated:
         return render(request, 'member:login')
@@ -153,7 +153,9 @@ def post_like_toggle(request, post_pk):
             user.like_posts.remove(post)
         else:
             user.like_posts.add(post)
-
+        if next_path:
+            return redirect(next_path)
+        return redirect('post:post_detail', post_pk=post_pk)
 
 
 

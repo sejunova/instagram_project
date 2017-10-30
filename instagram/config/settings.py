@@ -36,6 +36,18 @@ with open(os.path.join(CONFIG_SECRET_DIR, 'settings_common.json')) as json_data:
     SECRET_KEY = config_secret_common['django']['secret_key']
     DATABASES = config_secret_common['django']['databases']
 
+    #AWS
+    AWS_ACCESS_KEY_ID = config_secret_common['aws']['AWS_ACCESS_KEY_ID']
+    AWS_SECRET_ACCESS_KEY = config_secret_common['aws']['AWS_SECRET_ACCESS_KEY']
+    AWS_STORAGE_BUCKET_NAME = config_secret_common['aws']['AWS_STORAGE_BUCKET_NAME']
+
+# S3 FileStorage
+DEFAULT_FILE_STORAGE = 'config.storages.MediaStorage'
+STATICFILES_STORAGE = 'config.storages.StaticStorage'
+
+#S3 static directory customize
+STATICFILES_LOCATION = 'static'
+MEDIAFILES_LOCATION = 'media'
 
 #Facebook related configuration
 FACEBOOK_APP_ID = config_secret_common['facebook']['app_id']
@@ -50,7 +62,12 @@ FACEBOOK_SCOPE = ['user_friends', 'public_profile', 'email']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    '.ap-northeast-2.compute.amazonaws.com',
+    '.isj.co.kr',
+]
 
 
 # Application definition
@@ -64,6 +81,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_extensions',
+    'storages',
 
     'post',
     'member',
@@ -143,8 +161,5 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
-
-
+#배포를 위한 static모음
+STATIC_ROOT = os.path.join(ROOT_DIR, '.static_root')

@@ -9,12 +9,13 @@ class User(AbstractUser):
     USER_TYPE_FACEBOOK = 'f'
     USER_TYPE_DJANGO = 'd'
     USER_TYPE_CHOICES = (
-        ('USER_TYPE_FACEBOOK', 'Facebook'),
-        ('USER_TYPE_CHOICES', 'Django'),
+        (USER_TYPE_FACEBOOK, 'Facebook'),
+        (USER_TYPE_DJANGO, 'Django'),
     )
     img_profile = models.ImageField('이미지 업로드', upload_to='user', blank=True)
     age = models.PositiveIntegerField('나이', null=True)
     like_posts = models.ManyToManyField('post.Post')
+    nickname = models.CharField(max_length=20, unique=True)
     # user 객체에서 이걸 사용하면 user 객체가 반환
     following_users = models.ManyToManyField(
         'self',
