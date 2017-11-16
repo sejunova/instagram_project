@@ -1,5 +1,6 @@
 from django.conf.urls import url
-from . import views
+
+from .. import views
 
 urlpatterns = [
     url(r'^signup/$', views.signup, name='signup'),
@@ -8,4 +9,5 @@ urlpatterns = [
     url(r'^profile/(?P<nickname>\w+)/$', views.profile, name='profile'),
     url(r'^facebook-login/$', views.facebook_login, name='facebook_login'),
     url(r'^follow/(?P<nickname>\w+)/$', views.follow, name='follow'),
+    url(r'^front-facebook-login/$', views.FrontFacebookLogin.as_view(), name='front-facebook-login'),
 ]

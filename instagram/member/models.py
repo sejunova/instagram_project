@@ -1,10 +1,17 @@
 from django.contrib.auth.models import AbstractUser, UserManager as DjangoUserManager
 from django.db import models
+from rest_framework.authtoken.models import Token
 
 
 class UserManager(DjangoUserManager):
     def create_superuser(self, *args, **kwargs):
         return super().create_superuser(age=26, *args, **kwargs)
+
+    def create_facebook_user(self, facebook_user_id):
+        pass
+
+
+
 class User(AbstractUser):
     USER_TYPE_FACEBOOK = 'f'
     USER_TYPE_DJANGO = 'd'
@@ -31,6 +38,10 @@ class User(AbstractUser):
         verbose_name = "사용자 이름"
         verbose_name_plural = f'{verbose_name} 목록'
 
+    @property
+    def token(self):
+        return Token.objects.get_or_create(user=self)[0].key
+
     def follow_toggle(self, user):
         if not isinstance(user, User):
             raise ValueError('"user" argument must be User instance!')
@@ -41,11 +52,12 @@ class User(AbstractUser):
         relation.delete()
         return False
 
+
 class Relation(models.Model):
     from_user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        #user 객체에서 이것을 사용하면 relation 객체가 반환
+        # user 객체에서 이것을 사용하면 relation 객체가 반환
         related_name='following_user_relations'
     )
     to_user = models.ForeignKey(
@@ -57,6 +69,6 @@ class Relation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'Relation ('\
-                f'from : {self.from_user.username}, '\
-                f'to: {self.to_user.username})'
+        return f'Relation (' \
+               f'from : {self.from_user.username}, ' \
+               f'to: {self.to_user.username})'
